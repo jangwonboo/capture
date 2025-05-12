@@ -1,0 +1,60 @@
+# General application settings
+
+# OCR Settings
+ocr:
+  default_language: "eng+kor"  # Default OCR language
+  tesseract_paths:
+    windows: "C:/Program Files/Tesseract-OCR/tesseract.exe"
+    macos: 
+      - "/usr/local/bin/tesseract"
+      - "/opt/homebrew/bin/tesseract"
+    linux: "/usr/bin/tesseract"
+
+# Capture Settings
+capture:
+  default_delay: 0.5  # Default delay between captures in seconds
+  default_key: "right"  # Default key for page navigation
+  default_book_format: "A5"  # Default book format
+  default_scale_factor: 0.8  # Default scale factor for window resizing
+  default_padding_percent: 5  # Default padding percentage for window resizing
+
+# LLM Enhancement Settings
+llm:
+  default_enabled: false  # Default value for LLM enhancement
+  default_model_size: "small"  # Default model size (tiny, small, medium)
+  mlx_enabled: true  # Enable MLX optimization on Apple Silicon by default
+  
+  # CPU-friendly model options for different sizes
+  cpu_models:
+    text_correction:
+      tiny: "google/mt5-small"  # Smaller model ~300MB
+      small: "KETI-AIR/ke-t5-small-ko"  # ~500MB
+      medium: "KETI-AIR/ke-t5-base-ko"  # ~850MB
+    embedding:
+      tiny: "sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2"  # ~90MB
+      small: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"  # ~120MB
+      medium: "jhgan/ko-sroberta-multitask"  # ~300MB
+
+  # MLX-optimized models for Apple Silicon
+  mlx_models:
+    text_correction:
+      tiny: "mlx-community/Kokoro-82M-8bit"
+      small: "mlx-community/parakeet-tdt-0.6b-v2"
+      medium: "mlx-community/Dia-1.6B-6bit"
+    embedding:
+      tiny: "sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2"
+      small: "sentence-transformers/all-MiniLM-L6-v2"
+      medium: "sentence-transformers/all-mpnet-base-v2"
+
+# Output Settings
+output:
+  default_output_dir:
+    windows: "%USERPROFILE%\\Documents\\ebook_capture"
+    macos: "~/Documents/ebook_capture"
+    linux: "~/ebook_capture"
+
+# Logging Settings
+logging:
+  default_level: "INFO"  # Default logging level
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(funcName)s:%(lineno)d - %(message)s"
+  console_format: "%(levelname)s: %(message)s"

@@ -1,0 +1,223 @@
+# Book format definitions
+# All dimensions in mm unless specified otherwise
+
+# ISO standard formats
+A6:
+  width: 105
+  height: 148
+  description: "포켓북, 미니북 (ISO A6)"
+
+A5:
+  width: 148
+  height: 210
+  description: "소책자, 학습노트, 워크북 (ISO A5)"
+
+A4:
+  width: 210
+  height: 297
+  description: "매뉴얼, 워크북, 레퍼런스북 (ISO A4)"
+
+A3:
+  width: 297
+  height: 420
+  description: "화보, 대형 프레젠테이션용 도서 (ISO A3)"
+
+# Korean formats
+신국판:
+  width: 148
+  height: 210
+  description: "일반 단행본, 소설, 수필"
+
+국판:
+  width: 148
+  height: 225
+  description: "교양서, 자기계발서 등"
+
+크라운판:
+  width: 176
+  height: 248
+  description: "교과서, 학습서"
+
+변형국판:
+  width: 130
+  height: 188
+  description: "문고판, 에세이북"
+
+사륙판:
+  width: 127
+  height: 188
+  description: "전통적인 소설책, 문학책"
+
+46배판:
+  width: 188
+  height: 257
+  description: "아트북, 그림책 등"
+
+# US/UK formats
+POCKET:
+  width: 108
+  height: 175
+  description: "Pocket Book, 저가형 문고본"
+
+TRADE:
+  width: 152
+  height: 229
+  description: "Trade Paperback, 북미 일반 단행본"
+
+US_LETTER:
+  width: 216
+  height: 279
+  description: "US Letter, 교재, 논문, 매뉴얼"
+
+# Special formats
+SQUARE:
+  width: 210
+  height: 210
+  description: "정사각형, 유아책, 사진집"
+
+WIDE:
+  width: 257
+  height: 182
+  description: "와이드형, 풍경 중심 아트북"
+
+LONG:
+  width: 105
+  height: 297
+  description: "롱타입, 캘린더북, 타이포북"
+
+# Device formats (actual pixels)
+# iPhone 시리즈 (가로 모드 기준, actual pixels)
+IPHONE_SE:
+  width: 1334
+  height: 750
+  description: "iPhone SE (2/3세대), 4.7인치, 16:9"
+  is_device: true
+  group: "iPhone"
+
+IPHONE_XR:
+  width: 1792
+  height: 828
+  description: "iPhone 11 / XR, 6.1인치, 19.5:9"
+  is_device: true
+  group: "iPhone"
+
+IPHONE_12:
+  width: 2532
+  height: 1170
+  description: "iPhone 12-14 시리즈, 6.1인치, 19.5:9"
+  is_device: true
+  group: "iPhone"
+
+IPHONE_12_MINI:
+  width: 2340
+  height: 1080
+  description: "iPhone 12-14 mini, 5.4인치, 19.5:9"
+  is_device: true
+  group: "iPhone"
+
+IPHONE_12_PRO:
+  width: 2532
+  height: 1170
+  description: "iPhone 12-14 Pro, 6.1인치, 19.5:9"
+  is_device: true
+  group: "iPhone"
+
+IPHONE_12_PROMAX:
+  width: 2778
+  height: 1284
+  description: "iPhone 12-14 Pro Max, 6.7인치, 19.5:9"
+  is_device: true
+  group: "iPhone"
+
+IPHONE_15_PRO:
+  width: 2556
+  height: 1179
+  description: "iPhone 15 Pro, 6.1인치, 19.5:9"
+  is_device: true
+  group: "iPhone"
+
+IPHONE_15_PROMAX:
+  width: 2796
+  height: 1290
+  description: "iPhone 15 Pro Max, 6.7인치, 19.5:9"
+  is_device: true
+  group: "iPhone"
+
+# iPad 시리즈 (가로 모드 기준, actual pixels)
+IPAD_9:
+  width: 2160
+  height: 1620
+  description: "iPad 9세대, 10.2인치, 4:3"
+  is_device: true
+  group: "iPad"
+
+IPAD_10:
+  width: 2360
+  height: 1640
+  description: "iPad 10세대, 10.9인치, 약 4:3"
+  is_device: true
+  group: "iPad"
+
+IPAD_MINI_6:
+  width: 2266
+  height: 1488
+  description: "iPad mini 6세대, 8.3인치, 약 4:3"
+  is_device: true
+  group: "iPad"
+
+IPAD_AIR_5:
+  width: 2360
+  height: 1640
+  description: "iPad Air 4/5세대, 10.9인치, 약 4:3"
+  is_device: true
+  group: "iPad"
+
+IPAD_PRO_11:
+  width: 2388
+  height: 1668
+  description: "iPad Pro 11인치 (M1/M2), 4:3"
+  is_device: true
+  group: "iPad"
+
+IPAD_PRO_12:
+  width: 2732
+  height: 2048
+  description: "iPad Pro 12.9인치 (M1/M2), 4:3"
+  is_device: true
+  group: "iPad"
+
+# Samsung Galaxy Tab 시리즈 (가로 모드 기준, actual pixels)
+GALAXY_TAB_A8:
+  width: 1920
+  height: 1200
+  description: "Galaxy Tab A8 (2022), 10.5인치, 16:10"
+  is_device: true
+  group: "Galaxy"
+
+GALAXY_TAB_S6_LITE:
+  width: 2000
+  height: 1200
+  description: "Galaxy Tab S6 Lite, 10.4인치, 5:3"
+  is_device: true
+  group: "Galaxy"
+
+GALAXY_TAB_S7:
+  width: 2560
+  height: 1600
+  description: "Galaxy Tab S7/S8, 11인치, 16:10"
+  is_device: true
+  group: "Galaxy"
+
+GALAXY_TAB_S7_PLUS:
+  width: 2800
+  height: 1752
+  description: "Galaxy Tab S7+/S8+, 12.4인치, 16:10"
+  is_device: true
+  group: "Galaxy"
+
+GALAXY_TAB_S8_ULTRA:
+  width: 2960
+  height: 1848
+  description: "Galaxy Tab S8/S9 Ultra, 14.6인치, 16:10"
+  is_device: true
+  group: "Galaxy"

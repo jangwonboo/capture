@@ -1,0 +1,21 @@
+# Core dependencies
+pillow>=9.0.0  # For image processing
+pytesseract>=0.3.9  # OCR wrapper for Tesseract
+numpy>=1.22.0  # Required by various libraries
+pyyaml>=6.0  # For configuration files
+
+# Platform-specific dependencies (install as needed)
+# PyAutoGUI for cross-platform window management and screen capture
+pyautogui>=0.9.53
+
+# macOS specific
+# PyObjC>=8.0  # For macOS integration (optional)
+# Quartz  # For macOS screen capture (optional)
+
+# LLM enhancement (optional)
+transformers>=4.26.0  # For text enhancement models
+sentence-transformers>=2.2.2  # For embedding models
+torch>=2.0.0  # Base for transformers
+
+# MLX support for Apple Silicon (optional)
+# mlx>=0.0.10  # Apple's ML framework for Apple Silicon

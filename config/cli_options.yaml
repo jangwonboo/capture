@@ -1,0 +1,152 @@
+# CLI Options Configuration
+
+groups:
+  window:
+    title: "Window options"
+    options:
+      window:
+        flags: ["--window", "-w"]
+        type: "str"
+        help: "Window title to capture (default: capture entire screen)"
+      book-format:
+        flags: ["--book-format", "-f"]
+        type: "str"
+        help: "Book format for window sizing (see available formats with --list-formats)"
+      scale:
+        flags: ["--scale"]
+        type: "float"
+        default: 0.8
+        help: "Scale factor for window sizing (0.0-1.0, default: 0.8)"
+      padding:
+        flags: ["--padding"]
+        type: "int"
+        default: 5
+        help: "Padding percentage for window sizing (default: 5%)"
+
+  capture:
+    title: "Capture options"
+    options:
+      pages:
+        flags: ["--pages", "-p"]
+        type: "int"
+        default: 1
+        help: "Number of pages to capture (default: 1)"
+      start:
+        flags: ["--start", "-s"]
+        type: "int"
+        default: 1
+        help: "Starting page number (default: 1)"
+      delay:
+        flags: ["--delay", "-d"]
+        type: "float"
+        default: 0.5
+        help: "Delay before capture in seconds (default: 0.5)"
+      key:
+        flags: ["--key", "-k"]
+        type: "str"
+        default: "right"
+        help: "Key to press for page turn (default: right)"
+      page-delay:
+        flags: ["--page-delay"]
+        type: "float"
+        default: 0.3
+        help: "Delay after page turn in seconds (default: 0.3)"
+      output-dir:
+        flags: ["--output-dir", "-o"]
+        type: "str"
+        help: "Output directory (default: based on title)"
+      format:
+        flags: ["--format"]
+        type: "str"
+        default: "png"
+        choices: ["png", "jpg", "jpeg", "tiff", "bmp", "webp"]
+        help: "Output image format (default: png)"
+      quality:
+        flags: ["--quality"]
+        type: "int"
+        help: "Image quality for JPEG/WebP (1-100)"
+      crop:
+        flags: ["--crop"]
+        type: "str"
+        help: "Crop region as percentage: left,top,right,bottom"
+
+  monitor:
+    title: "Monitor options"
+    options:
+      monitor:
+        flags: ["--monitor"]
+        type: "int"
+        help: "Specify monitor index to capture (default: auto-detect)"
+      list-monitors:
+        flags: ["--list-monitors"]
+        action: "store_true"
+        help: "List available monitors and exit"
+
+  ocr:
+    title: "OCR options"
+    options:
+      ocr:
+        flags: ["--ocr"]
+        action: "store_true"
+        help: "Perform OCR on captured images"
+      language:
+        flags: ["--language", "-l"]
+        type: "str"
+        help: "OCR language code (default: eng+kor)"
+      psm:
+        flags: ["--psm"]
+        type: "int"
+        default: 3
+        help: "Tesseract Page Segmentation Mode (default: 3)"
+      dpi:
+        flags: ["--dpi"]
+        type: "int"
+        default: 300
+        help: "DPI for OCR processing (default: 300)"
+
+  llm:
+    title: "LLM enhancement options"
+    options:
+      enhance:
+        flags: ["--enhance"]
+        action: "store_true"
+        help: "Use LLM to enhance OCR text"
+      model-size:
+        flags: ["--model-size"]
+        type: "str"
+        choices: ["tiny", "small", "medium"]
+        default: "small"
+        help: "LLM model size (default: small)"
+      no-mlx:
+        flags: ["--no-mlx"]
+        action: "store_true"
+        help: "Disable MLX optimization on Apple Silicon"
+
+  misc:
+    title: "Miscellaneous options"
+    options:
+      list-formats:
+        flags: ["--list-formats"]
+        action: "store_true"
+        help: "List available book formats and exit"
+      log-level:
+        flags: ["--log-level"]
+        type: "str"
+        choices: ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        default: "INFO"
+        help: "Log level (default: INFO)"
+      log-file:
+        flags: ["--log-file"]
+        type: "str"
+        help: "Log file path (default: based on output directory and title)"
+      quiet:
+        flags: ["--quiet", "-q"]
+        action: "store_true"
+        help: "Suppress console output"
+
+required:
+  title:
+    flags: ["--title", "-t"]
+    type: "str"
+    required: false
+    help: "Title of the e-book (used for output directory naming)" 
