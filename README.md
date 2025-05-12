@@ -37,25 +37,41 @@ git clone https://github.com/yourusername/capture.git
 cd capture
 ```
 
-2. 의존성 패키지를 설치합니다:
+2. **중요**: Python 3.11 환경을 사용해야 합니다. Python 3.12에서는 SQLite 호환성 문제가 있습니다.
+```bash
+# Conda 사용 시
+conda create -n py311 python=3.11 -y
+conda activate py311
+
+# venv 사용 시
+python3.11 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+```
+
+3. 의존성 패키지를 설치합니다:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Tesseract OCR을 설치합니다:
+4. Tesseract OCR을 설치합니다:
    - macOS: `brew install tesseract`
    - Windows: [github.com/UB-Mannheim/tesseract/wiki](https://github.com/UB-Mannheim/tesseract/wiki)에서 다운로드
    - Linux: `sudo apt-get install tesseract-ocr`
 
-4. (선택사항) 다국어 OCR을 위한 언어 데이터 설치:
+5. (선택사항) 다국어 OCR을 위한 언어 데이터 설치:
    - macOS: `brew install tesseract-lang`
    - Windows/Linux: [github.com/tesseract-ocr/tessdata](https://github.com/tesseract-ocr/tessdata)에서 언어 데이터 다운로드
 
-5. (선택사항) LLM 텍스트 개선 기능을 위한 설정:
+6. (선택사항) LLM 텍스트 개선 기능을 위한 설정:
    - Apple Silicon 기기에서 MLX 가속화를 사용하려면: `pip install mlx>=0.0.10`
    - 사용할 모델 크기를 선택하려면 환경 변수 설정: `export MLX_MODEL_SIZE=small`
 
 ## 5. 사용 방법
+
+shell 스크립트를 통한 실행 (자동으로 Python 3.11 환경 활성화):
+```bash
+./capture.sh --window "창 제목" --title "책 제목" --pages 10
+```
 
 기본 사용법:
 ```bash
@@ -217,6 +233,7 @@ python run.py --window "리더앱" --title "내 책" --monitor 1 --pages 10
 - **페이지 캡처 실패**: 연속 5회 이상 실패할 경우 캡처 프로세스 중단하고 로깅
 - **라이브러리 의존성 문제**: 선택적 기능 비활성화 (예: MLX 없으면 CPU 모드로 전환)
 - **메모리 관리**: 대량의 이미지 처리 시 메모리 사용량 모니터링 및 정리
+- **Python 버전 호환성 문제**: Python 3.12에서 SQLite 호환성 문제가 있으므로 Python 3.11을 사용해야 합니다. `capture.sh` 스크립트를 사용하면 자동으로 Python 3.11 환경에서 실행됩니다.
 
 ## 10. 프로젝트 구조
 
@@ -224,6 +241,7 @@ python run.py --window "리더앱" --title "내 책" --monitor 1 --pages 10
 capture/
 ├── config/               # 설정 파일
 │   ├── book_formats.yaml # 책 판형 정의
+│   ├── cli_options.yaml  # 명령행 옵션 정의
 │   └── settings.yaml     # 일반 설정
 ├── core/                 # 핵심 기능 모듈
 │   ├── capture.py        # 화면 캡처 기능
@@ -241,6 +259,7 @@ capture/
 │   └── platform_utils.py # 플랫폼 감지 유틸리티
 ├── temp/                 # 미사용 파일 보관
 ├── run.py                # 메인 실행 스크립트
+├── capture.sh            # Python 3.11 환경으로 실행하는 쉘 스크립트
 ├── requirements.txt      # 의존성 패키지 목록
 └── README.md             # 프로젝트 문서
 ```

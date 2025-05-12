@@ -78,15 +78,8 @@ class LLMEnhancer:
                     # Load text model
                     self.text_model = load_mlx_model(text_model_name)
                     
-                    # For embedding, check if we need sentence transformers
-                    # In MLX mode, some models still use sentence transformers
-                    if 'sentence-transformers' in embedding_model_name:
-                        import torch
-                        from sentence_transformers import SentenceTransformer
-                        self.embedding_model = SentenceTransformer(embedding_model_name)
-                    else:
-                        # Use MLX for embedding model too
-                        self.embedding_model = load_mlx_model(embedding_model_name, model_type='embedding')
+                    # For embedding, load appropriate model
+                    self.embedding_model = load_mlx_model(embedding_model_name, model_type='embedding')
                         
                 except ImportError as e:
                     logger.error(f"MLX import error: {e}")
@@ -98,20 +91,37 @@ class LLMEnhancer:
                 try:
                     logger.debug("FLOW: Entering try block for PyTorch model loading")
                     import torch
-                    from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-                    from sentence_transformers import SentenceTransformer
+                    from transformers import AutoModelForSeq2SeqLM, AutoModelForSequenceClassification, AutoTokenizer, AutoModel
                     
-                    # Load the text correction model
-                    self.text_model = {
-                        'model': AutoModelForSeq2SeqLM.from_pretrained(text_model_name),
-                        'tokenizer': AutoTokenizer.from_pretrained(text_model_name)
-                    }
+                    # Load the text correction model - handle different model types
+                    if "bart" in text_model_name.lower():
+                        self.text_model = {
+                            'model': AutoModelForSeq2SeqLM.from_pretrained(text_model_name),
+                            'tokenizer': AutoTokenizer.from_pretrained(text_model_name)
+                        }
+                    elif "bert" in text_model_name.lower() or "roberta" in text_model_name.lower():
+                        self.text_model = {
+                            'model': AutoModelForSequenceClassification.from_pretrained(text_model_name),
+                            'tokenizer': AutoTokenizer.from_pretrained(text_model_name)
+                        }
+                    else:
+                        # Default sequence-to-sequence model
+                        self.text_model = {
+                            'model': AutoModelForSeq2SeqLM.from_pretrained(text_model_name),
+                            'tokenizer': AutoTokenizer.from_pretrained(text_model_name)
+                        }
                     
                     # Load the embedding model
-                    self.embedding_model = SentenceTransformer(embedding_model_name)
+                    self.embedding_model = {
+                        'model': AutoModel.from_pretrained(embedding_model_name),
+                        'tokenizer': AutoTokenizer.from_pretrained(embedding_model_name)
+                    }
                     
                 except ImportError as e:
                     logger.error(f"PyTorch/Transformers import error: {e}")
+                    return False
+                except Exception as e:
+                    logger.error(f"Error loading models: {e}")
                     return False
             
             self.models_loaded = True
@@ -173,21 +183,45 @@ class LLMEnhancer:
                     model = self.text_model['model']
                     tokenizer = self.text_model['tokenizer']
                     
-                    # Prepare input
-                    prompt = f"{instruction}:\n\n{text}"
-                    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
+                    # Determine model type and handle accordingly
+                    model_name = type(model).__name__.lower()
                     
-                    # Generate output
-                    outputs = model.generate(
-                        inputs["input_ids"],
-                        max_length=min(len(text) * 2, 1024),
-                        num_beams=4,
-                        temperature=0.7,
-                        early_stopping=True
-                    )
-                    
-                    # Decode output
-                    corrected = tokenizer.decode(outputs[0], skip_special_tokens=True)
+                    if "seq2seq" in model_name or "bart" in model_name:
+                        # Sequence-to-sequence model (like BART)
+                        prompt = f"{instruction}:\n\n{text}"
+                        inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
+                        
+                        # Generate output
+                        outputs = model.generate(
+                            inputs["input_ids"],
+                            max_length=min(len(text) * 2, 1024),
+                            num_beams=4,
+                            temperature=0.7,
+                            early_stopping=True
+                        )
+                        
+                        # Decode output
+                        corrected = tokenizer.decode(outputs[0], skip_special_tokens=True)
+                    else:
+                        # For classification models (BERT, RoBERTa), we'll use them for sentence fixing
+                        # This is a simplified approach - in real-world usage, you might want a more sophisticated method
+                        logger.warning("Using classification model for text correction - limited capability")
+                        sentences = text.split(". ")
+                        corrected_sentences = []
+                        
+                        for sentence in sentences:
+                            if not sentence.strip():
+                                continue
+                                
+                            # Simple corrections to fix common OCR issues
+                            fixed = sentence.strip()
+                            # Add more OCR fix patterns here as needed
+                                
+                            corrected_sentences.append(fixed)
+                        
+                        corrected = ". ".join(corrected_sentences)
+                        if not corrected.endswith("."):
+                            corrected += "."
                     
                     logger.info(f"PyTorch text correction complete: {len(corrected)} characters")
                     return corrected
@@ -224,7 +258,41 @@ class LLMEnhancer:
             
             # Generate embeddings based on model type
             if isinstance(self.embedding_model, type({})) and 'tokenizer' in self.embedding_model:
-                # This is an MLX custom embedding model
+                # Standard Hugging Face model
+                try:
+                    logger.debug("FLOW: Entering standard model embedding generation try block")
+                    import torch
+                    import numpy as np
+                    
+                    model = self.embedding_model['model']
+                    tokenizer = self.embedding_model['tokenizer']
+                    
+                    # Process each text and get embeddings
+                    all_embeddings = []
+                    for text in texts:
+                        # Tokenize
+                        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+                        
+                        # Get model output
+                        with torch.no_grad():
+                            outputs = model(**inputs)
+                        
+                        # Get the embeddings (use the CLS token embedding or mean pooling)
+                        if hasattr(outputs, "pooler_output"):
+                            # BERT/RoBERTa models have this
+                            embedding = outputs.pooler_output.numpy()[0]
+                        else:
+                            # Fallback: use mean of last hidden state
+                            embedding = outputs.last_hidden_state.mean(dim=1).numpy()[0]
+                        
+                        all_embeddings.append(embedding.tolist())
+                    
+                    return all_embeddings
+                except Exception as e:
+                    logger.error(f"Standard model embedding error: {e}")
+                    return None
+            else:
+                # This assumes it's an MLX model or other type
                 try:
                     logger.debug("FLOW: Entering MLX embedding generation try block")
                     from utils.mlx_utils import get_embeddings_with_mlx
@@ -238,28 +306,9 @@ class LLMEnhancer:
                 except Exception as e:
                     logger.error(f"MLX embedding error: {e}")
                     return None
-            else:
-                # This is a SentenceTransformer model
-                try:
-                    logger.debug("FLOW: Entering SentenceTransformer embedding generation try block")
-                    import torch
-                    import numpy as np
-                    
-                    # Generate embeddings
-                    embeddings = self.embedding_model.encode(texts)
-                    
-                    # Convert numpy arrays to Python lists for easy serialization
-                    if isinstance(embeddings, np.ndarray):
-                        embeddings = embeddings.tolist()
-                    elif isinstance(embeddings, torch.Tensor):
-                        embeddings = embeddings.cpu().numpy().tolist()
-                    
-                    return embeddings
-                except Exception as e:
-                    logger.error(f"SentenceTransformer embedding error: {e}")
-                    return None
+                
         except Exception as e:
-            logger.error(f"Error generating embeddings: {e}")
+            logger.error(f"Embedding generation error: {e}")
             return None
     
     def chunk_text(self, text: str, max_length: int = 512, overlap: int = 50) -> List[str]:

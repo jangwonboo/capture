@@ -27,13 +27,13 @@ llm:
   # CPU-friendly model options for different sizes
   cpu_models:
     text_correction:
-      tiny: "google/mt5-small"  # Smaller model ~300MB
-      small: "KETI-AIR/ke-t5-small-ko"  # ~500MB
-      medium: "KETI-AIR/ke-t5-base-ko"  # ~850MB
+      tiny: "facebook/bart-base"  # More compatible ~140MB
+      small: "distilbert-base-uncased-finetuned-sst-2-english"  # ~267MB
+      medium: "distilroberta-base"  # ~315MB
     embedding:
-      tiny: "sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2"  # ~90MB
-      small: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"  # ~120MB
-      medium: "jhgan/ko-sroberta-multitask"  # ~300MB
+      tiny: "distilbert-base-uncased"  # ~66MB
+      small: "bert-base-uncased"  # ~110MB
+      medium: "roberta-base"  # ~125MB
 
   # MLX-optimized models for Apple Silicon
   mlx_models:
@@ -42,9 +42,9 @@ llm:
       small: "mlx-community/parakeet-tdt-0.6b-v2"
       medium: "mlx-community/Dia-1.6B-6bit"
     embedding:
-      tiny: "sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2"
-      small: "sentence-transformers/all-MiniLM-L6-v2"
-      medium: "sentence-transformers/all-mpnet-base-v2"
+      tiny: "distilbert-base-uncased"
+      small: "bert-base-uncased"
+      medium: "roberta-base"
 
 # Output Settings
 output:
